@@ -202,8 +202,10 @@ void create_obj_type(void) {
     T_EQ(1, dom.num_obj_types);
 
     T_EQ(1, t_pos->num_mixins);
-    T_EQ(2, t_pos->num_sparse_mixin_indices);
     T_CHECK(memcmp(t_pos->mixins, ar_pos, sizeof(ar_pos)) == 0);
+    T_EQ(2, t_pos->num_sparse_mixin_indices);
+    T_EQ(0, t_pos->sparse_mixin_indices[0]);
+    T_EQ(DNMX_MIXIN_INDEX_OFFSET, t_pos->sparse_mixin_indices[pos_info.id]);
 
     const dnmx_mixin_type_info* ar_pers_inv[] = {&pers_info, &inv_info};
     const dnmx_obj_type* t_pers_inv = dnmx_domain_get_obj_type(&dom, ar_pers_inv, 2);
@@ -211,8 +213,12 @@ void create_obj_type(void) {
     T_EQ(2, dom.num_obj_types);
 
     T_EQ(2, t_pers_inv->num_mixins);
-    T_EQ(4, t_pers_inv->num_sparse_mixin_indices);
     T_CHECK(memcmp(t_pers_inv->mixins, ar_pers_inv, sizeof(ar_pers_inv)) == 0);
+    T_EQ(4, t_pers_inv->num_sparse_mixin_indices);
+    T_EQ(0, t_pers_inv->sparse_mixin_indices[0]);
+    T_EQ(0, t_pers_inv->sparse_mixin_indices[1]);
+    T_EQ(DNMX_MIXIN_INDEX_OFFSET, t_pers_inv->sparse_mixin_indices[pers_info.id]);
+    T_EQ(DNMX_MIXIN_INDEX_OFFSET + 1, t_pers_inv->sparse_mixin_indices[inv_info.id]);
 
     {
         const dnmx_obj_type* t_pos2 = dnmx_domain_get_obj_type(&dom, ar_pos, 1);

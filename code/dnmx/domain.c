@@ -169,7 +169,7 @@ const dnmx_obj_type* dnmx_domain_get_obj_type(dnmx_domain* d, const dnmx_mixin_t
     // search for type
     for (uint32_t i = 0; i < d->num_obj_types; ++i) {
         const dnmx_obj_type* type = d->obj_types[i];
-        if (is_same_type(type, mixins, num_mixins)) return type;
+        if (is_same_type(type, mixins, num_mixins)) return type; // get existing type
     }
 
     // we need to create a new type info
@@ -204,6 +204,15 @@ const dnmx_obj_type* dnmx_domain_get_obj_type(dnmx_domain* d, const dnmx_mixin_t
 
     new_type->sparse_mixin_indices = (uint32_t*)bptr;
     memset(new_type->sparse_mixin_indices, 0, sparse_mixin_indices_buf_size);
+    {
+        // set indices to provided mixins
+        uint32_t index = 0;
+        for (uint32_t i = 0; i < num_mixins; ++i) {
+            const dnmx_mixin_type_info* m = mixins[i];
+            new_type->sparse_mixin_indices[m->id] = index + DNMX_MIXIN_INDEX_OFFSET;
+            ++index;
+        }
+    }
 
     // add new type to types
     void* new_buf = realloc(d->obj_types, S_V_P * (d->num_obj_types + 1));

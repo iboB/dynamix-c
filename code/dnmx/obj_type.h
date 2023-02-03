@@ -45,6 +45,19 @@ typedef struct dnmx_obj_type_vtable_entry {
     dnmx_obj_type_vtable_msg* end;
 } dnmx_obj_type_vtable_entry;
 
+// special indices in an object's mixin_data member
+enum dnmx_obj_type_reserved_mixin_indices {
+    // index 0 is reserved for a null mixin data. It's used to return nullptr on queries for non member mixins
+    // (without having to check with an if or worse yet - a loop)
+    DNMX_NULL_MIXIN_DATA_INDEX,
+
+    // index 1 is reserved for a virtual mixin. It's used to be cast to the default message implementators
+    DNMX_DEFAULT_MSG_IMPL_INDEX,
+
+    // offset of the mixin indices in the object's mixin_data member
+    DNMX_MIXIN_INDEX_OFFSET
+};
+
 typedef struct dnmx_obj_type {
     const dnmx_domain* domain; // domain of this type info
 
