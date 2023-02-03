@@ -195,7 +195,7 @@ void create_obj_type(void) {
     T_NULL(dom.obj_types);
     T_EQ(0, dom.num_obj_types);
 
-    dnmx_mixin_type_info* ar_pos[] = {&pos_info};
+    const dnmx_mixin_type_info* ar_pos[] = {&pos_info};
     const dnmx_obj_type* t_pos = dnmx_domain_get_obj_type_info(&dom, ar_pos, 1);
     T_NOT_NULL(t_pos);
     T_NOT_NULL(dom.obj_types);
@@ -205,7 +205,7 @@ void create_obj_type(void) {
     T_EQ(2, t_pos->num_sparse_mixin_indices);
     T_CHECK(memcmp(t_pos->mixins, ar_pos, sizeof(ar_pos)) == 0);
 
-    dnmx_mixin_type_info* ar_pers_inv[] = {&pers_info, &inv_info};
+    const dnmx_mixin_type_info* ar_pers_inv[] = {&pers_info, &inv_info};
     const dnmx_obj_type* t_pers_inv = dnmx_domain_get_obj_type_info(&dom, ar_pers_inv, 2);
     T_NOT_NULL(t_pers_inv);
     T_EQ(2, dom.num_obj_types);

@@ -141,8 +141,8 @@ static bool are_own_mixins(const dnmx_domain* dom, const dnmx_mixin_type_info* c
         const dnmx_mixin_type_info* m = mixins[i];
         if (!m) return false;
         dnmx_mixin_id id = m->id;
-        if (mixins[i]->id >= dom->num_sparse_mixins) return false;
-        if (mixins[i] != dom->sparse_mixins[mixins[i]->id]) return false;
+        if (id >= dom->num_sparse_mixins) return false;
+        if (m != dom->sparse_mixins[id]) return false;
     }
     return true;
 }
