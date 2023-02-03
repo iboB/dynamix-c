@@ -21,4 +21,6 @@ target_sources(dynamix-c PRIVATE
     obj_type.c
     domain.h
     domain.c
- )
+    obj.h
+    obj.c
+)
