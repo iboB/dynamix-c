@@ -2,17 +2,20 @@
 // SPDX-License-Identifier: MIT
 //
 #pragma once
+#include "api.h"
 #include "mixin_id.h"
 
 #include <stdint.h>
 #include <stddef.h>
 
-typedef void(*dnmx_mixin_constructor_func)(void* ptr);
-typedef void(*dnmx_mixin_copy_func)(void* ptr, const void* src);
-typedef void(*dnmx_mixin_move_func)(void* ptr, void* src);
-typedef void(*dnmx_mixin_destructor_func)(void* ptr);
+typedef struct dnmx_mixin_type_info dnmx_mixin_type_info;
 
-typedef struct dnmx_mixin_type_info {
+typedef void(*dnmx_mixin_ctor_func)(const dnmx_mixin_type_info* info, void* ptr);
+typedef void(*dnmx_mixin_copy_func)(const dnmx_mixin_type_info* info, void* ptr, const void* src);
+typedef void(*dnmx_mixin_move_func)(const dnmx_mixin_type_info* info, void* ptr, void* src);
+typedef void(*dnmx_mixin_dtor_func)(const dnmx_mixin_type_info* info, void* ptr);
+
+struct dnmx_mixin_type_info {
     /// The mixin's id
     dnmx_mixin_id id;
 
@@ -23,16 +26,24 @@ typedef struct dnmx_mixin_type_info {
 
     // dnmx_mixin_allocator* allocator;
 
-    dnmx_mixin_constructor_func default_constructor;
-    dnmx_mixin_destructor_func destructor;
-    dnmx_mixin_copy_func copy_constructor;
-    dnmx_mixin_copy_func copy_assignment;
-    dnmx_mixin_move_func move_constructor;
-    dnmx_mixin_move_func move_assignment;
+    // any of these can be null
+    dnmx_mixin_ctor_func ctor;
+    dnmx_mixin_dtor_func dtor;
+    dnmx_mixin_copy_func copy_ctor;
+    dnmx_mixin_copy_func copy_asgn;
+    dnmx_mixin_move_func move_ctor;
+    dnmx_mixin_move_func move_asgn;
 
     // dnmx_message_for_mixin* message_infos;
 
     uintptr_t user_data;
 
     // dnmx_metric num_mixins;
-} dnmx_mixin_type_info;
+};
+
+DYNAMIX_C_API void dnmx_default_mixin_ctor(const dnmx_mixin_type_info* info, void* ptr);
+
+// no need for default dtor. it would be empty anyway and the lib checks for that
+
+DYNAMIX_C_API void dnmx_default_mixin_copy(const dnmx_mixin_type_info* info, void* ptr, const void* src);
+DYNAMIX_C_API void dnmx_default_mixin_move(const dnmx_mixin_type_info* info, void* ptr, void* src);

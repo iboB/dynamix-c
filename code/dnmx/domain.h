@@ -10,10 +10,13 @@ typedef struct dnmx_mixin_type_info dnmx_mixin_type_info;
 typedef struct dnmx_obj_type_info dnmx_obj_type_info;
 
 typedef struct dnmx_domain {
-    const dnmx_mixin_type_info** sparse_mixins; // sparse array
+    // sparse array
+    const dnmx_mixin_type_info** sparse_mixins;
     uint32_t num_sparse_mixins;
 
-    dnmx_obj_type_info** obj_types; // non-sparse array
+    // non-sparse array
+    // TODO: benchmark with a hash table here
+    dnmx_obj_type_info** obj_types;
     uint32_t num_obj_types;
 
     // maybe use this if benchmarks suggest it:
