@@ -67,7 +67,7 @@ bool dnmx_domain_register_mixin(dnmx_domain* d, dnmx_mixin_type_info* info) {
     return true;
 }
 
-static void free_obj_type_info(dnmx_obj_type* type) {
+static void free_obj_type(dnmx_obj_type* type) {
     free(type->buf);
     free(type);
 }
@@ -88,7 +88,7 @@ bool dnmx_domain_unregister_mixin(dnmx_domain* d, dnmx_mixin_type_info* info) {
     for (uint32_t i = 0; i < d->num_obj_types; ++i) {
         dnmx_obj_type* type = d->obj_types[i];
         if (type->sparse_mixin_indices[id]) {
-            free_obj_type_info(type);
+            free_obj_type(type);
             ++back;
         }
         else if (back) {
@@ -156,7 +156,7 @@ static_assert(alignof(void*) >= alignof(uint32_t), "fix dnmx_obj_type buffer");
 
 #define BUF_SIZE(p, name) (sizeof(p->name[0]) * p->I_DYNAMIX_PP_CAT(num_, name))
 
-const dnmx_obj_type* dnmx_domain_get_obj_type_info(dnmx_domain* d, const dnmx_mixin_type_info* const* mixins, uint32_t num_mixins) {
+const dnmx_obj_type* dnmx_domain_get_obj_type(dnmx_domain* d, const dnmx_mixin_type_info* const* mixins, uint32_t num_mixins) {
     assert(d);
     assert(num_mixins > 0);
 
@@ -192,7 +192,7 @@ const dnmx_obj_type* dnmx_domain_get_obj_type_info(dnmx_domain* d, const dnmx_mi
     // alloc and fill buf
     new_type->buf = malloc(mixins_buf_size + sparse_mixin_indices_buf_size);
     if (!new_type->buf) {
-        free_obj_type_info(new_type);
+        free_obj_type(new_type);
         return NULL; // out of memory
     }
 
@@ -208,7 +208,7 @@ const dnmx_obj_type* dnmx_domain_get_obj_type_info(dnmx_domain* d, const dnmx_mi
     // add new type to types
     void* new_buf = realloc(d->obj_types, S_V_P * (d->num_obj_types + 1));
     if (!new_buf) {
-        free_obj_type_info(new_type);
+        free_obj_type(new_type);
         return NULL; // out of memory
     }
     d->obj_types = (dnmx_obj_type**)new_buf;
@@ -225,7 +225,7 @@ void dnmx_domain_clear(dnmx_domain* d) {
 
     for (uint32_t i = 0; i < d->num_obj_types; ++i) {
         dnmx_obj_type* type = d->obj_types[i];
-        free_obj_type_info(type);
+        free_obj_type(type);
     }
     d->num_obj_types = 0;
     free(d->obj_types);

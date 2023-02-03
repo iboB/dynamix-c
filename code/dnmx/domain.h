@@ -36,7 +36,7 @@ DYNAMIX_C_API bool dnmx_domain_unregister_mixin(dnmx_domain* d, dnmx_mixin_type_
 // the provided list of infos must be sorted by id
 // the mixins must be previously registered with the domain
 // the returned value will be invalidated if a pariticipating mixin gets unregistered
-DYNAMIX_C_API const dnmx_obj_type* dnmx_domain_get_obj_type_info(dnmx_domain* d, const dnmx_mixin_type_info* const* mixins, uint32_t num_mixins);
+DYNAMIX_C_API const dnmx_obj_type* dnmx_domain_get_obj_type(dnmx_domain* d, const dnmx_mixin_type_info* const* mixins, uint32_t num_mixins);
 
 // frees the domain data for a domain
 // any calls related to the domain after this call will lead to undefined behavior

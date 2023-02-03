@@ -196,7 +196,7 @@ void create_obj_type(void) {
     T_EQ(0, dom.num_obj_types);
 
     const dnmx_mixin_type_info* ar_pos[] = {&pos_info};
-    const dnmx_obj_type* t_pos = dnmx_domain_get_obj_type_info(&dom, ar_pos, 1);
+    const dnmx_obj_type* t_pos = dnmx_domain_get_obj_type(&dom, ar_pos, 1);
     T_NOT_NULL(t_pos);
     T_NOT_NULL(dom.obj_types);
     T_EQ(1, dom.num_obj_types);
@@ -206,7 +206,7 @@ void create_obj_type(void) {
     T_CHECK(memcmp(t_pos->mixins, ar_pos, sizeof(ar_pos)) == 0);
 
     const dnmx_mixin_type_info* ar_pers_inv[] = {&pers_info, &inv_info};
-    const dnmx_obj_type* t_pers_inv = dnmx_domain_get_obj_type_info(&dom, ar_pers_inv, 2);
+    const dnmx_obj_type* t_pers_inv = dnmx_domain_get_obj_type(&dom, ar_pers_inv, 2);
     T_NOT_NULL(t_pers_inv);
     T_EQ(2, dom.num_obj_types);
 
@@ -215,10 +215,10 @@ void create_obj_type(void) {
     T_CHECK(memcmp(t_pers_inv->mixins, ar_pers_inv, sizeof(ar_pers_inv)) == 0);
 
     {
-        const dnmx_obj_type* t_pos2 = dnmx_domain_get_obj_type_info(&dom, ar_pos, 1);
+        const dnmx_obj_type* t_pos2 = dnmx_domain_get_obj_type(&dom, ar_pos, 1);
         T_EQ_PTR(t_pos, t_pos2);
 
-        const dnmx_obj_type* t_pers_inv2 = dnmx_domain_get_obj_type_info(&dom, ar_pers_inv, 2);
+        const dnmx_obj_type* t_pers_inv2 = dnmx_domain_get_obj_type(&dom, ar_pers_inv, 2);
         T_EQ_PTR(t_pers_inv, t_pers_inv2);
     }
 
