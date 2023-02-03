@@ -55,3 +55,8 @@ add_subdirectory(code/dnmx)
 if(DYNAMIX_C_BUILD_SCRATCH)
     add_subdirectory(scratch)
 endif()
+
+if(DYNAMIX_C_BUILD_UNIT_TESTS)
+    enable_testing()
+    add_subdirectory(test)
+endif()
