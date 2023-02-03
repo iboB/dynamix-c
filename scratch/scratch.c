@@ -1,7 +1,7 @@
 #include <dnmx/mixin_type_info.h>
 #include <dnmx/domain.h>
 
-int main() {
+int main(void) {
     dnmx_mixin_type_info info = {0};
 
     dnmx_domain dom = {0};

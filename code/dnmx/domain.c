@@ -116,7 +116,8 @@ bool dnmx_domain_unregister_mixin(dnmx_domain* d, const dnmx_mixin_type_info* in
     return true;
 }
 
-static bool is_sorted(const dnmx_mixin_type_info** mixins, uint32_t num_mixins) {
+// check if mixin info list is sorted by id
+static bool is_sorted(const dnmx_mixin_type_info* const* mixins, uint32_t num_mixins) {
     const dnmx_mixin_type_info* prev = mixins[0];
     for (uint32_t i = 1; i < num_mixins; ++i) {
         const dnmx_mixin_type_info* cur = mixins[i];
@@ -125,7 +126,8 @@ static bool is_sorted(const dnmx_mixin_type_info** mixins, uint32_t num_mixins) 
     return true;
 }
 
-static bool is_same_type(const dnmx_obj_type* type, const dnmx_mixin_type_info** mixins, uint32_t num_mixins) {
+// check if an obj type is composed of provided infos
+static bool is_same_type(const dnmx_obj_type* type, const dnmx_mixin_type_info* const* mixins, uint32_t num_mixins) {
     if (type->num_mixins != num_mixins) return false;
     const dnmx_mixin_type_info** tmixins = type->mixins;
     for (uint32_t i = 0; i < num_mixins; ++i) {
@@ -134,20 +136,34 @@ static bool is_same_type(const dnmx_obj_type* type, const dnmx_mixin_type_info**
     return true;
 }
 
-
+// check if all mixin infos in list are registered with the provided domain
+static bool are_own_mixins(const dnmx_domain* dom, const dnmx_mixin_type_info* const* mixins, uint32_t num_mixins) {
+    for (uint32_t i = 0; i < num_mixins; ++i) {
+        const dnmx_mixin_type_info* m = mixins[i];
+        if (!m) return false;
+        dnmx_mixin_id id = m->id;
+        if (mixins[i]->id >= dom->num_sparse_mixins) return false;
+        if (mixins[i] != dom->sparse_mixins[mixins[i]->id]) return false;
+    }
+    return true;
+}
 
 // we allocate a single buffer in the dnmx_obj_type
 // this is the order in which elements are placed inside
 // to avoid manually fixin the alignment, we check here that the alignments are in a non-increasing order
-static_assert(alignof(dnmx_obj_type_call_table_entry) >= alignof(dnmx_obj_type_call_table_msg), "fix dnmx_obj_type buffer");
-static_assert(alignof(dnmx_obj_type_call_table_msg) >= alignof(void*), "fix dnmx_obj_type buffer");
+static_assert(alignof(dnmx_obj_type_vtable_entry) >= alignof(dnmx_obj_type_vtable_msg), "fix dnmx_obj_type buffer");
+static_assert(alignof(dnmx_obj_type_vtable_msg) >= alignof(void*), "fix dnmx_obj_type buffer");
 static_assert(alignof(void*) >= alignof(uint32_t), "fix dnmx_obj_type buffer");
 
 #define BUF_SIZE(p, name) (sizeof(p->name[0]) * p->I_DYNAMIX_PP_CAT(num_, name))
 
-const dnmx_obj_type* dnmx_domain_get_obj_type_info(dnmx_domain* d, const dnmx_mixin_type_info** mixins, uint32_t num_mixins) {
+const dnmx_obj_type* dnmx_domain_get_obj_type_info(dnmx_domain* d, const dnmx_mixin_type_info* const* mixins, uint32_t num_mixins) {
     assert(d);
     assert(num_mixins > 0);
+
+    // must be own mixins
+    assert(are_own_mixins(d, mixins, num_mixins));
+
     // we need the mixins to be sorted so we can search in the list of type infos
     assert(is_sorted(mixins, num_mixins));
 

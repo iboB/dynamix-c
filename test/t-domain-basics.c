@@ -120,9 +120,46 @@ void reg_unreg_mixin(void) {
         T_NULL(dom.sparse_mixins[i]);
     }
 
-    // removing pos should free slot 1
+    // removing pos should free slot 1 and not 2
     T_TRUE(dnmx_domain_unregister_mixin(&dom, &pos_info));
     pos_info.id = DNMX_INVALID_MIXIN_ID;
+    T_NULL(dom.sparse_mixins[1]);
+    T_EQ_PTR(&pers_info, dom.sparse_mixins[2]);
+
+    // adding a new type must add it to slot 1
+    dnmx_mixin_type_info inv_info = get_inventory_mixin_type_info();
+    T_EQ(DNMX_INVALID_MIXIN_ID, inv_info.id);
+    T_TRUE(dnmx_domain_register_mixin(&dom, &inv_info));
+    T_EQ(1, inv_info.id);
+    T_EQ_PTR(&inv_info, dom.sparse_mixins[1]);
+    T_EQ_PTR(&pers_info, dom.sparse_mixins[2]);
+
+    // adding more types should be safe
+    T_TRUE(dnmx_domain_register_mixin(&dom, &pos_info));
+    T_EQ(3, pos_info.id);
+
+    dnmx_mixin_type_info stats_info = get_stats_mixin_type_info();
+    T_EQ(DNMX_INVALID_MIXIN_ID, stats_info.id);
+    T_TRUE(dnmx_domain_register_mixin(&dom, &stats_info));
+    T_EQ(4, stats_info.id);
+
+    T_GT(4, dom.num_sparse_mixins);
+
+    T_NULL(dom.sparse_mixins[0]);
+    T_EQ_PTR(&inv_info, dom.sparse_mixins[1]);
+    T_EQ_PTR(&pers_info, dom.sparse_mixins[2]);
+    T_EQ_PTR(&pos_info, dom.sparse_mixins[3]);
+    T_EQ_PTR(&stats_info, dom.sparse_mixins[4]);
+
+    for (uint32_t i = 5; i < dom.num_sparse_mixins; ++i) {
+        T_NULL(dom.sparse_mixins[i]);
+    }
+
+    dnmx_domain_clear(&dom);
+}
+
+void create_obj_type(void) {
+    dnmx_domain dom = {0};
 
     dnmx_domain_clear(&dom);
 }
@@ -131,5 +168,6 @@ int main(void) {
     UNITY_BEGIN();
     RUN_TEST(empty_domain);
     RUN_TEST(reg_unreg_mixin);
+    RUN_TEST(create_obj_type);
     return UNITY_END();
 }
