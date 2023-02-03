@@ -5,7 +5,7 @@
 #include "mixin_id.h"
 
 #include <stdint.h>
-#include <stdbool.h>
+#include <stddef.h>
 
 typedef void(*dnmx_mixin_constructor_func)(void* ptr);
 typedef void(*dnmx_mixin_copy_func)(void* ptr, const void* src);

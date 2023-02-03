@@ -23,11 +23,11 @@ bool dnmx_domain_register_mixin(dnmx_domain* d, dnmx_mixin_type_info* info) {
 
     if (!d->sparse_mixins) {
         d->num_sparse_mixins = 4;
-        d->sparse_mixins = (dnmx_mixin_type_info**)calloc(d->num_sparse_mixins, S_V_P);
+        d->sparse_mixins = (const dnmx_mixin_type_info**)calloc(d->num_sparse_mixins, S_V_P);
         if (!d->sparse_mixins) return false; // out of memory
     }
 
-    assert(d->sparse_mixins > 0);
+    assert(d->num_sparse_mixins > 0);
     assert(DNMX_INVALID_MIXIN_ID == 0);
 
     dnmx_mixin_id free_id = DNMX_INVALID_MIXIN_ID;
@@ -58,7 +58,7 @@ bool dnmx_domain_register_mixin(dnmx_domain* d, dnmx_mixin_type_info* info) {
             d->num_sparse_mixins = free_id;
             return false;
         }
-        d->sparse_mixins = (dnmx_mixin_type_info**)new_buf;
+        d->sparse_mixins = (const dnmx_mixin_type_info**)new_buf;
 
         const uint32_t grown_by = d->num_sparse_mixins - free_id;
         memset(d->sparse_mixins + free_id, 0, S_V_P * grown_by);
