@@ -5,10 +5,12 @@
 #include "mixin_type_info.h"
 
 #include <string.h>
+#include <assert.h>
 
-bool dnmx_obj_type_has_mixin_by_name(const dnmx_obj_type* info, dnmx_sv name) {
-    for (uint32_t i = 0; i < info->num_mixins; ++i) {
-        if (dnmx_sv_eq(name, info->mixins[i]->name)) return true;
+bool dnmx_obj_type_has_mixin_by_name(const dnmx_obj_type* type, dnmx_sv name) {
+    assert(type);
+    for (uint32_t i = 0; i < type->num_mixins; ++i) {
+        if (dnmx_sv_eq(name, type->mixins[i]->name)) return true;
     }
     return false;
 }

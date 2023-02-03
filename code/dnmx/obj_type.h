@@ -68,9 +68,9 @@ typedef struct dnmx_obj_type {
     void* buf;
 } dnmx_obj_type;
 
-static inline bool dnmx_obj_type_has_mixin(const dnmx_obj_type* info, dnmx_mixin_id id) {
-    if (id >= info->num_sparse_mixin_indices) return false;
-    return info->sparse_mixin_indices[id] != 0;
+static inline bool dnmx_obj_type_has_mixin(const dnmx_obj_type* type, dnmx_mixin_id id) {
+    if (id >= type->num_sparse_mixin_indices) return false;
+    return type->sparse_mixin_indices[id] != 0;
 }
 
-DYNAMIX_C_API bool dnmx_obj_type_has_mixin_by_name(const dnmx_obj_type* info, dnmx_sv name);
+DYNAMIX_C_API bool dnmx_obj_type_has_mixin_by_name(const dnmx_obj_type* type, dnmx_sv name);
