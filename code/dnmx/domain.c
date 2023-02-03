@@ -3,7 +3,7 @@
 //
 #include "domain.h"
 #include "mixin_type_info.h"
-#include "obj_type_info.h"
+#include "obj_type.h"
 
 #include "bits/pp.h"
 
@@ -14,7 +14,8 @@
 #define S_V_P sizeof(void*)
 
 bool dnmx_domain_register_mixin(dnmx_domain* d, dnmx_mixin_type_info* info) {
-    if (!info) return false; // info is nullptr
+    assert(d);
+    assert(info);
     if (info->id != DNMX_INVALID_MIXIN_ID) return false; // info has id
     if (dnmx_sv_is_empty(info->name)) return false; // unnamed info
     if (!info->size) return false; // zero size, malformed type
@@ -68,12 +69,13 @@ bool dnmx_domain_register_mixin(dnmx_domain* d, dnmx_mixin_type_info* info) {
     return true;
 }
 
-static void free_obj_type_info(dnmx_obj_type_info* type) {
+static void free_obj_type_info(dnmx_obj_type* type) {
     free(type->buf);
     free(type);
 }
 
 bool dnmx_domain_unregister_mixin(dnmx_domain* d, const dnmx_mixin_type_info* info) {
+    assert(d);
     if (!info) return false; // unregister null
     const uint32_t id = info->id;
     if (id >= d->num_sparse_mixins) return false; // invalid id? bad id?
@@ -85,7 +87,7 @@ bool dnmx_domain_unregister_mixin(dnmx_domain* d, const dnmx_mixin_type_info* in
     // remove all object type infos which reference it
     uint32_t back = 0;
     for (uint32_t i = 0; i < d->num_obj_types; ++i) {
-        dnmx_obj_type_info* type = d->obj_types[i];
+        dnmx_obj_type* type = d->obj_types[i];
         if (type->sparse_mixin_indices[id]) {
             free_obj_type_info(type);
             ++back;
@@ -123,7 +125,7 @@ static bool is_sorted(const dnmx_mixin_type_info** mixins, uint32_t num_mixins) 
     return true;
 }
 
-static bool is_same_type(const dnmx_obj_type_info* type, const dnmx_mixin_type_info** mixins, uint32_t num_mixins) {
+static bool is_same_type(const dnmx_obj_type* type, const dnmx_mixin_type_info** mixins, uint32_t num_mixins) {
     if (type->num_mixins != num_mixins) return false;
     const dnmx_mixin_type_info** tmixins = type->mixins;
     for (uint32_t i = 0; i < num_mixins; ++i) {
@@ -134,28 +136,29 @@ static bool is_same_type(const dnmx_obj_type_info* type, const dnmx_mixin_type_i
 
 
 
-// we allocate a single buffer in the dnmx_obj_type_info
+// we allocate a single buffer in the dnmx_obj_type
 // this is the order in which elements are placed inside
 // to avoid manually fixin the alignment, we check here that the alignments are in a non-increasing order
-static_assert(alignof(dnmx_obj_type_info_call_table_entry) >= alignof(dnmx_obj_type_info_call_table_msg), "fix dnmx_obj_type_info buffer");
-static_assert(alignof(dnmx_obj_type_info_call_table_msg) >= alignof(void*), "fix dnmx_obj_type_info buffer");
-static_assert(alignof(void*) >= alignof(uint32_t), "fix dnmx_obj_type_info buffer");
+static_assert(alignof(dnmx_obj_type_call_table_entry) >= alignof(dnmx_obj_type_call_table_msg), "fix dnmx_obj_type buffer");
+static_assert(alignof(dnmx_obj_type_call_table_msg) >= alignof(void*), "fix dnmx_obj_type buffer");
+static_assert(alignof(void*) >= alignof(uint32_t), "fix dnmx_obj_type buffer");
 
 #define BUF_SIZE(p, name) (sizeof(p->name[0]) * p->I_DYNAMIX_PP_CAT(num_, name))
 
-const dnmx_obj_type_info* dnmx_domain_get_obj_type_info(dnmx_domain* d, const dnmx_mixin_type_info** mixins, uint32_t num_mixins) {
+const dnmx_obj_type* dnmx_domain_get_obj_type_info(dnmx_domain* d, const dnmx_mixin_type_info** mixins, uint32_t num_mixins) {
+    assert(d);
     assert(num_mixins > 0);
     // we need the mixins to be sorted so we can search in the list of type infos
     assert(is_sorted(mixins, num_mixins));
 
     // search for type
     for (uint32_t i = 0; i < d->num_obj_types; ++i) {
-        const dnmx_obj_type_info* type = d->obj_types[i];
+        const dnmx_obj_type* type = d->obj_types[i];
         if (is_same_type(type, mixins, num_mixins)) return type;
     }
 
     // we need to create a new type info
-    dnmx_obj_type_info* new_type = (dnmx_obj_type_info*)malloc(sizeof(dnmx_obj_type_info));
+    dnmx_obj_type* new_type = (dnmx_obj_type*)malloc(sizeof(dnmx_obj_type));
     if (!new_type) return NULL; // out of memory
     new_type->domain = d;
 
@@ -193,19 +196,20 @@ const dnmx_obj_type_info* dnmx_domain_get_obj_type_info(dnmx_domain* d, const dn
         free_obj_type_info(new_type);
         return NULL; // out of memory
     }
-    d->obj_types = (dnmx_obj_type_info**)new_buf;
+    d->obj_types = (dnmx_obj_type**)new_buf;
     d->obj_types[d->num_obj_types] = new_type;
     d->num_obj_types += 1;
     return new_type;
 }
 
 void dnmx_domain_clear(dnmx_domain* d) {
+    assert(d);
     d->num_sparse_mixins = 0;
     free(d->sparse_mixins);
     d->sparse_mixins = NULL;
 
     for (uint32_t i = 0; i < d->num_obj_types; ++i) {
-        dnmx_obj_type_info* type = d->obj_types[i];
+        dnmx_obj_type* type = d->obj_types[i];
         free_obj_type_info(type);
     }
     d->num_obj_types = 0;

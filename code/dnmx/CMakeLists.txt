@@ -17,8 +17,8 @@ target_sources(dynamix-c PRIVATE
 
     mixin_type_info.h
     mixin_type_info.c
-    obj_type_info.h
-    obj_type_info.c
+    obj_type.h
+    obj_type.c
     domain.h
     domain.c
  )

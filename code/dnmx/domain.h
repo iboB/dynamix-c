@@ -8,7 +8,7 @@
 #include <stdbool.h>
 
 typedef struct dnmx_mixin_type_info dnmx_mixin_type_info;
-typedef struct dnmx_obj_type_info dnmx_obj_type_info;
+typedef struct dnmx_obj_type dnmx_obj_type;
 
 typedef struct dnmx_domain {
     // purely optional
@@ -21,7 +21,7 @@ typedef struct dnmx_domain {
 
     // non-sparse array
     // TODO: benchmark with a hash table here
-    dnmx_obj_type_info** obj_types;
+    dnmx_obj_type** obj_types;
     uint32_t num_obj_types;
 
     // maybe use this if benchmarks suggest it:
@@ -34,12 +34,10 @@ DYNAMIX_C_API bool dnmx_domain_unregister_mixin(dnmx_domain* d, const dnmx_mixin
 // will create the type info if it doesn't exist
 // the provided list of infos must be sorted by id
 // the requested type must have at least one mixin
-DYNAMIX_C_API const dnmx_obj_type_info* dnmx_domain_get_obj_type_info(dnmx_domain* d, const dnmx_mixin_type_info** mixins, uint32_t num_mixins);
+DYNAMIX_C_API const dnmx_obj_type* dnmx_domain_get_obj_type_info(dnmx_domain* d, const dnmx_mixin_type_info** mixins, uint32_t num_mixins);
 
 // frees the domain data for a domain
 // any calls related to the domain after this call will lead to undefined behavior
 // (likely a crash or memory corruption)
 // will not clear name!
 DYNAMIX_C_API void dnmx_domain_clear(dnmx_domain* d);
-
-
