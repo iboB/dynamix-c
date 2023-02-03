@@ -24,6 +24,12 @@ list(APPEND CMAKE_MODULE_PATH
 set(ICM_DEV_C_STANDARD 11)
 include(icm_dev_mode)
 
+if(ICM_DEV_MODE AND MSVC)
+    # on MSVC set windows SDK to one that supports stdalign in dev mode
+    # without dev mode the lib will check and optionally enable features
+    set(CMAKE_SYSTEM_VERSION 10.0.20348.0)
+endif()
+
 #######################################
 # code
 
