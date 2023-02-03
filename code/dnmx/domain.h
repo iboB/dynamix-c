@@ -3,6 +3,7 @@
 //
 #pragma once
 #include "api.h"
+#include "bits/sv.h"
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -10,6 +11,10 @@ typedef struct dnmx_mixin_type_info dnmx_mixin_type_info;
 typedef struct dnmx_obj_type_info dnmx_obj_type_info;
 
 typedef struct dnmx_domain {
+    // purely optional
+    // useful for debugging
+    dnmx_sv name;
+
     // sparse array
     const dnmx_mixin_type_info** sparse_mixins;
     uint32_t num_sparse_mixins;
@@ -34,6 +39,7 @@ DYNAMIX_C_API const dnmx_obj_type_info* dnmx_domain_get_obj_type_info(dnmx_domai
 // frees the domain data for a domain
 // any calls related to the domain after this call will lead to undefined behavior
 // (likely a crash or memory corruption)
+// will not clear name!
 DYNAMIX_C_API void dnmx_domain_clear(dnmx_domain* d);
 
 

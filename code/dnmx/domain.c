@@ -7,7 +7,6 @@
 
 #include "bits/pp.h"
 
-#include <string.h>
 #include <malloc.h>
 #include <assert.h>
 #include <stdalign.h>
@@ -17,7 +16,7 @@
 bool dnmx_domain_register_mixin(dnmx_domain* d, dnmx_mixin_type_info* info) {
     if (!info) return false; // info is nullptr
     if (info->id != DNMX_INVALID_MIXIN_ID) return false; // info has id
-    if (!info->name) return false; // unnamed info
+    if (dnmx_sv_is_empty(info->name)) return false; // unnamed info
     if (!info->size) return false; // zero size, malformed type
     if (!info->alignment) return false; // zero alignment, malformed type
 
@@ -35,7 +34,7 @@ bool dnmx_domain_register_mixin(dnmx_domain* d, dnmx_mixin_type_info* info) {
         const dnmx_mixin_type_info* sparse = d->sparse_mixins[i];
         if (sparse) {
             assert(sparse->id == i);
-            if (strcmp(info->name, sparse->name) == 0) return false; // duplicate name
+            if (dnmx_sv_eq(info->name, sparse->name)) return false; // duplicate name
         }
         else {
             free_id = i;

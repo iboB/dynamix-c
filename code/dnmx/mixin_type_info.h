@@ -5,6 +5,8 @@
 #include "api.h"
 #include "mixin_id.h"
 
+#include "bits/sv.h"
+
 #include <stdint.h>
 #include <stddef.h>
 
@@ -19,7 +21,7 @@ struct dnmx_mixin_type_info {
     /// The mixin's id
     dnmx_mixin_id id;
 
-    const char* name;
+    dnmx_sv name;
 
     size_t size;
     size_t alignment;

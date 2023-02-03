@@ -20,4 +20,6 @@ macro(dynamix_c_test test)
     )
 endmacro()
 
+dynamix_c_test(bits-sv t-bits-sv.c)
+
 dynamix_c_test(domain-basics t-domain-basics.c)

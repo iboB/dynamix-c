@@ -5,6 +5,9 @@
 #include "api.h"
 #include "mixin_id.h"
 #include "message.h"
+
+#include "bits/sv.h"
+
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -70,4 +73,4 @@ static inline bool dnmx_obj_type_info_has_mixin(const dnmx_obj_type_info* info, 
     return info->sparse_mixin_indices[id] != 0;
 }
 
-DYNAMIX_C_API bool dnmx_obj_type_info_has_mixin_by_name(const dnmx_obj_type_info* info, const char* name);
+DYNAMIX_C_API bool dnmx_obj_type_info_has_mixin_by_name(const dnmx_obj_type_info* info, dnmx_sv name);

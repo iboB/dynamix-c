@@ -6,7 +6,7 @@ int main() {
 
     dnmx_domain dom = {0};
 
-    info.name = "gosho";
+    info.name = dnmx_make_sv_lit("gosho");
     info.size = 8;
     info.alignment = 8;
 

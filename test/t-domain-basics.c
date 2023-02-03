@@ -26,7 +26,7 @@ typedef struct position {
 
 dnmx_mixin_type_info get_position_mixin_type_info(void) {
     dnmx_mixin_type_info ret = {0};
-    ret.name = "position";
+    ret.name = dnmx_make_sv_lit("position");
     ret.size = sizeof(position);
     ret.alignment = alignof(position);
     return ret;
@@ -39,7 +39,7 @@ typedef struct person {
 
 dnmx_mixin_type_info get_person_mixin_type_info(void) {
     dnmx_mixin_type_info ret = {0};
-    ret.name = "person";
+    ret.name = dnmx_make_sv_lit("person");
     ret.size = sizeof(person);
     ret.alignment = alignof(person);
     return ret;
@@ -52,7 +52,7 @@ typedef struct inventory {
 
 dnmx_mixin_type_info get_inventory_mixin_type_info(void) {
     dnmx_mixin_type_info ret = {0};
-    ret.name = "inventory";
+    ret.name = dnmx_make_sv_lit("inventory");
     ret.size = sizeof(inventory);
     ret.alignment = alignof(inventory);
     return ret;
@@ -69,7 +69,7 @@ typedef struct stats {
 
 dnmx_mixin_type_info get_stats_mixin_type_info(void) {
     dnmx_mixin_type_info ret = {0};
-    ret.name = "stats";
+    ret.name = dnmx_make_sv_lit("stats");
     ret.size = sizeof(stats);
     ret.alignment = alignof(stats);
     return ret;
@@ -87,7 +87,7 @@ void reg_unreg_mixin(void) {
     T_NOT_NULL(dom.sparse_mixins);
     T_GT(1, dom.num_sparse_mixins);
     T_NULL(dom.sparse_mixins[0]);
-    T_EQ(&pos_info, dom.sparse_mixins[1]);
+    T_EQ_PTR(&pos_info, dom.sparse_mixins[1]);
     for (uint32_t i = 2; i < dom.num_sparse_mixins; ++i) {
         T_NULL(dom.sparse_mixins[i]);
     }
@@ -106,7 +106,7 @@ void reg_unreg_mixin(void) {
     // adding it again should place it in slot 1 once more
     T_TRUE(dnmx_domain_register_mixin(&dom, &pos_info));
     T_EQ(1, pos_info.id);
-    T_EQ(&pos_info, dom.sparse_mixins[1]);
+    T_EQ_PTR(&pos_info, dom.sparse_mixins[1]);
 
     // adding another should place it at slot 2
     dnmx_mixin_type_info pers_info = get_person_mixin_type_info();
@@ -114,8 +114,8 @@ void reg_unreg_mixin(void) {
     T_TRUE(dnmx_domain_register_mixin(&dom, &pers_info));
     T_GT(2, dom.num_sparse_mixins);
     T_EQ(2, pers_info.id);
-    T_EQ(&pos_info, dom.sparse_mixins[1]); // pos is preserved
-    T_EQ(&pers_info, dom.sparse_mixins[2]); // pers is here
+    T_EQ_PTR(&pos_info, dom.sparse_mixins[1]); // pos is preserved
+    T_EQ_PTR(&pers_info, dom.sparse_mixins[2]); // pers is here
     for (uint32_t i = 3; i < dom.num_sparse_mixins; ++i) {
         T_NULL(dom.sparse_mixins[i]);
     }
