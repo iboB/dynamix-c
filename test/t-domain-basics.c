@@ -4,6 +4,7 @@
 #include "s-unity.h"
 #include <dnmx/domain.h>
 #include <dnmx/mixin_type_info.h>
+#include <dnmx/obj_type.h>
 
 #include <stdalign.h>
 
@@ -173,13 +174,53 @@ void reg_unreg_mixin(void) {
 void create_obj_type(void) {
     dnmx_domain dom = {0};
 
-    //dnmx_mixin_type_info pos_info = get_position_mixin_type_info();
-    //dnmx_mixin_type_info pers_info = get_person_mixin_type_info();
-    //dnmx_mixin_type_info inv_info = get_inventory_mixin_type_info();
-    //dnmx_mixin_type_info stats_info = get_stats_mixin_type_info();
+    dnmx_mixin_type_info pos_info = get_position_mixin_type_info();
+    dnmx_mixin_type_info pers_info = get_person_mixin_type_info();
+    dnmx_mixin_type_info inv_info = get_inventory_mixin_type_info();
+    dnmx_mixin_type_info stats_info = get_stats_mixin_type_info();
+    dnmx_mixin_type_info empty_info = get_empty_mixin_type_info();
 
-    //dnmx_domain_register_mixin(&dom, &pos_info);
-    //dnmx_domain_register_mixin(&dom, &stats_info);
+    T_TRUE(dnmx_domain_register_mixin(&dom, &pos_info));
+    T_TRUE(dnmx_domain_register_mixin(&dom, &pers_info));
+    T_TRUE(dnmx_domain_register_mixin(&dom, &inv_info));
+    T_TRUE(dnmx_domain_register_mixin(&dom, &stats_info));
+    T_TRUE(dnmx_domain_register_mixin(&dom, &empty_info));
+
+    T_EQ(1, pos_info.id);
+    T_EQ(2, pers_info.id);
+    T_EQ(3, inv_info.id);
+    T_EQ(4, stats_info.id);
+    T_EQ(5, empty_info.id);
+
+    T_NULL(dom.obj_types);
+    T_EQ(0, dom.num_obj_types);
+
+    dnmx_mixin_type_info* ar_pos[] = {&pos_info};
+    const dnmx_obj_type* t_pos = dnmx_domain_get_obj_type_info(&dom, ar_pos, 1);
+    T_NOT_NULL(t_pos);
+    T_NOT_NULL(dom.obj_types);
+    T_EQ(1, dom.num_obj_types);
+
+    T_EQ(1, t_pos->num_mixins);
+    T_EQ(2, t_pos->num_sparse_mixin_indices);
+    T_CHECK(memcmp(t_pos->mixins, ar_pos, sizeof(ar_pos)) == 0);
+
+    dnmx_mixin_type_info* ar_pers_inv[] = {&pers_info, &inv_info};
+    const dnmx_obj_type* t_pers_inv = dnmx_domain_get_obj_type_info(&dom, ar_pers_inv, 2);
+    T_NOT_NULL(t_pers_inv);
+    T_EQ(2, dom.num_obj_types);
+
+    T_EQ(2, t_pers_inv->num_mixins);
+    T_EQ(4, t_pers_inv->num_sparse_mixin_indices);
+    T_CHECK(memcmp(t_pers_inv->mixins, ar_pers_inv, sizeof(ar_pers_inv)) == 0);
+
+    {
+        const dnmx_obj_type* t_pos2 = dnmx_domain_get_obj_type_info(&dom, ar_pos, 1);
+        T_EQ_PTR(t_pos, t_pos2);
+
+        const dnmx_obj_type* t_pers_inv2 = dnmx_domain_get_obj_type_info(&dom, ar_pers_inv, 2);
+        T_EQ_PTR(t_pers_inv, t_pers_inv2);
+    }
 
     dnmx_domain_clear(&dom);
 }
