@@ -29,6 +29,10 @@ struct dnmx_mixin_type_info {
     // must be unique in a domain
     dnmx_sv name;
 
+    // memory allocated for mixin and alignment of that memory
+    // can both be zero
+    // if size is not zero, alignment must be a power of 2
+    // if size is zero, alignment is ignored
     size_t size;
     size_t alignment;
 

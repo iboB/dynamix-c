@@ -18,8 +18,6 @@ bool dnmx_domain_register_mixin(dnmx_domain* d, dnmx_mixin_type_info* info) {
     assert(info);
     if (info->id != DNMX_INVALID_MIXIN_ID) return false; // info has id
     if (dnmx_sv_is_empty(info->name)) return false; // unnamed info
-    if (!info->size) return false; // zero size, malformed type
-    if (!info->alignment) return false; // zero alignment, malformed type
 
     if (!d->sparse_mixins) {
         d->num_sparse_mixins = 4;
