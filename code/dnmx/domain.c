@@ -74,13 +74,14 @@ static void free_obj_type_info(dnmx_obj_type* type) {
     free(type);
 }
 
-bool dnmx_domain_unregister_mixin(dnmx_domain* d, const dnmx_mixin_type_info* info) {
+bool dnmx_domain_unregister_mixin(dnmx_domain* d, dnmx_mixin_type_info* info) {
     assert(d);
     if (!info) return false; // unregister null
     const uint32_t id = info->id;
     if (id >= d->num_sparse_mixins) return false; // invalid id? bad id?
     if (d->sparse_mixins[id] != info) return false; // not sparse here
 
+    info->id = DNMX_INVALID_MIXIN_ID;
     d->sparse_mixins[id] = NULL;
 
     // since this mixin is no longer valid

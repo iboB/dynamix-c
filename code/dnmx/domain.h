@@ -29,7 +29,7 @@ typedef struct dnmx_domain {
 } dnmx_domain;
 
 DYNAMIX_C_API bool dnmx_domain_register_mixin(dnmx_domain* d, dnmx_mixin_type_info* info);
-DYNAMIX_C_API bool dnmx_domain_unregister_mixin(dnmx_domain* d, const dnmx_mixin_type_info* info);
+DYNAMIX_C_API bool dnmx_domain_unregister_mixin(dnmx_domain* d, dnmx_mixin_type_info* info);
 
 // will return an existing type or create a new one if such doesn't exist
 // the requested type must have at least one mixin

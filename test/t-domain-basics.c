@@ -94,7 +94,7 @@ void reg_unreg_mixin(void) {
 
     // remove pos_info
     T_TRUE(dnmx_domain_unregister_mixin(&dom, &pos_info));
-    pos_info.id = DNMX_INVALID_MIXIN_ID;
+    T_EQ(DNMX_INVALID_MIXIN_ID, pos_info.id);
 
     // sparse mixins must be preserved as a buffer, but it should be all-null
     T_GT(1, dom.num_sparse_mixins);
@@ -122,7 +122,7 @@ void reg_unreg_mixin(void) {
 
     // removing pos should free slot 1 and not 2
     T_TRUE(dnmx_domain_unregister_mixin(&dom, &pos_info));
-    pos_info.id = DNMX_INVALID_MIXIN_ID;
+    T_EQ(DNMX_INVALID_MIXIN_ID, pos_info.id);
     T_NULL(dom.sparse_mixins[1]);
     T_EQ_PTR(&pers_info, dom.sparse_mixins[2]);
 
@@ -160,6 +160,14 @@ void reg_unreg_mixin(void) {
 
 void create_obj_type(void) {
     dnmx_domain dom = {0};
+
+    //dnmx_mixin_type_info pos_info = get_position_mixin_type_info();
+    //dnmx_mixin_type_info pers_info = get_person_mixin_type_info();
+    //dnmx_mixin_type_info inv_info = get_inventory_mixin_type_info();
+    //dnmx_mixin_type_info stats_info = get_stats_mixin_type_info();
+
+    //dnmx_domain_register_mixin(&dom, &pos_info);
+    //dnmx_domain_register_mixin(&dom, &stats_info);
 
     dnmx_domain_clear(&dom);
 }

@@ -18,9 +18,15 @@ typedef void(*dnmx_mixin_move_func)(const dnmx_mixin_type_info* info, void* ptr,
 typedef void(*dnmx_mixin_dtor_func)(const dnmx_mixin_type_info* info, void* ptr);
 
 struct dnmx_mixin_type_info {
-    /// The mixin's id
+    // the mixin id
+    // must be initialized to 0 (DNMX_INVALID_MIXIN_ID) on unregistered infos
+    // will be set by the domain once registered
+    // having a non-zero id implies the type info is registered with some domain
+    // to register a type in multiple domains, you need make copies of the info per domain
     dnmx_mixin_id id;
 
+    // must be set, cannot be empty
+    // must be unique in a domain
     dnmx_sv name;
 
     size_t size;
@@ -38,6 +44,8 @@ struct dnmx_mixin_type_info {
 
     // dnmx_message_for_mixin* message_infos;
 
+    // optional user data which is accessible where the info is provided
+    // the library does not touch this value
     uintptr_t user_data;
 
     // dnmx_metric num_mixins;
