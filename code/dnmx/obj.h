@@ -41,8 +41,33 @@ struct dnmx_obj {
 // this pointer is not null
 extern DYNAMIX_C_API const dnmx_obj_type* const DNMX_NULL_OBJ_TYPE;
 
-// use this to initialize objects
-// it has proper non-null type and mixin_data
+/////////////////////////////////////////////
+// initializers:
+// always use one of these to initialize an object
+// all of these assume the object is either empty or uninitialized
+
 extern DYNAMIX_C_API const dnmx_obj DNMX_OBJ_INIT;
-// .. alternative use this:
 DYNAMIX_C_API void dnmx_obj_init(dnmx_obj* obj);
+
+// may return false if copy is not possible
+DYNAMIX_C_API bool dnmx_obj_init_copy(dnmx_obj* tgt, const dnmx_obj* src);
+
+// will clear src
+DYNAMIX_C_API void dnmx_obj_init_move(dnmx_obj* tgt, dnmx_obj* src);
+
+/////////////////////////////////////////////
+// asignments
+// they assume a valid object (never uninitialized)
+
+// may return false if copy is not possible
+DYNAMIX_C_API bool dnmx_obj_asgn_copy(dnmx_obj* tgt, const dnmx_obj* src);
+
+// will clear src
+DYNAMIX_C_API void dnmx_obj_asgn_move(dnmx_obj* tgt, dnmx_obj* src);
+
+/////////////////////////////////////////////
+
+// frees and clears all data in an object
+// leaves it in an empty state
+DYNAMIX_C_API void dnmx_obj_clear(dnmx_obj* obj);
+

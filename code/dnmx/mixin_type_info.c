@@ -5,7 +5,7 @@
 
 #include <string.h>
 
-void dnmx_default_mixin_ctor(const dnmx_mixin_type_info* info, void* ptr) {
+void dnmx_default_mixin_init(const dnmx_mixin_type_info* info, void* ptr) {
     memset(ptr, 0, info->size);
 }
 

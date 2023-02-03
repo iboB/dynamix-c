@@ -12,10 +12,10 @@
 
 typedef struct dnmx_mixin_type_info dnmx_mixin_type_info;
 
-typedef void(*dnmx_mixin_ctor_func)(const dnmx_mixin_type_info* info, void* ptr);
+typedef void(*dnmx_mixin_init_func)(const dnmx_mixin_type_info* info, void* ptr);
 typedef void(*dnmx_mixin_copy_func)(const dnmx_mixin_type_info* info, void* ptr, const void* src);
 typedef void(*dnmx_mixin_move_func)(const dnmx_mixin_type_info* info, void* ptr, void* src);
-typedef void(*dnmx_mixin_dtor_func)(const dnmx_mixin_type_info* info, void* ptr);
+typedef void(*dnmx_mixin_destroy_func)(const dnmx_mixin_type_info* info, void* ptr);
 
 struct dnmx_mixin_type_info {
     // the mixin id
@@ -39,11 +39,11 @@ struct dnmx_mixin_type_info {
     // dnmx_mixin_allocator* allocator;
 
     // any of these can be null
-    dnmx_mixin_ctor_func ctor;
-    dnmx_mixin_dtor_func dtor;
-    dnmx_mixin_copy_func copy_ctor;
+    dnmx_mixin_init_func init;
+    dnmx_mixin_destroy_func destroy;
+    dnmx_mixin_copy_func copy_init;
     dnmx_mixin_copy_func copy_asgn;
-    dnmx_mixin_move_func move_ctor;
+    dnmx_mixin_move_func move_init;
     dnmx_mixin_move_func move_asgn;
 
     // dnmx_message_for_mixin* message_infos;
@@ -55,9 +55,9 @@ struct dnmx_mixin_type_info {
     // dnmx_metric num_mixins;
 };
 
-DYNAMIX_C_API void dnmx_default_mixin_ctor(const dnmx_mixin_type_info* info, void* ptr);
+DYNAMIX_C_API void dnmx_default_mixin_init(const dnmx_mixin_type_info* info, void* ptr);
 
-// no need for default dtor. it would be empty anyway and the lib checks for that
+// no need for default destroy. it would be empty anyway and the lib checks for that
 
 DYNAMIX_C_API void dnmx_default_mixin_copy(const dnmx_mixin_type_info* info, void* ptr, const void* src);
 DYNAMIX_C_API void dnmx_default_mixin_move(const dnmx_mixin_type_info* info, void* ptr, void* src);
