@@ -17,6 +17,11 @@ typedef void(*dnmx_mixin_copy_func)(const dnmx_mixin_type_info* info, void* ptr,
 typedef void(*dnmx_mixin_move_func)(const dnmx_mixin_type_info* info, void* ptr, void* src);
 typedef void(*dnmx_mixin_destroy_func)(const dnmx_mixin_type_info* info, void* ptr);
 
+// contains the information for a mixin type
+// register with a domain
+// will be used by address
+// the user is responsible to preserve the lifetime of a mixin type info until it's no longer needed
+// (program ends, or type info gets unregistered)
 struct dnmx_mixin_type_info {
     // the mixin id
     // must be initialized to 0 (DNMX_INVALID_MIXIN_ID) on unregistered infos

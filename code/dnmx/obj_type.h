@@ -58,6 +58,9 @@ enum dnmx_obj_type_reserved_mixin_indices {
     DNMX_MIXIN_INDEX_OFFSET
 };
 
+// object type
+// types are managed by the domain
+// objects which have the same mixin types will have the same object type
 typedef struct dnmx_obj_type {
     const dnmx_domain* domain; // domain of this type info
 

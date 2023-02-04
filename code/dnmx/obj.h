@@ -44,7 +44,7 @@ extern DYNAMIX_C_API const dnmx_obj_type* const DNMX_NULL_OBJ_TYPE;
 /////////////////////////////////////////////
 // initializers:
 // always use one of these to initialize an object
-// all of these assume the object is either empty or uninitialized
+// all of these assume the object is uninitialized
 
 extern DYNAMIX_C_API const dnmx_obj DNMX_OBJ_INIT;
 DYNAMIX_C_API void dnmx_obj_init(dnmx_obj* obj);
@@ -71,3 +71,7 @@ DYNAMIX_C_API void dnmx_obj_asgn_move(dnmx_obj* tgt, dnmx_obj* src);
 // leaves it in an empty state
 DYNAMIX_C_API void dnmx_obj_clear(dnmx_obj* obj);
 
+// destroys object
+// leaves it in an uninitialized state
+// must be called for every object which has been initialized
+DYNAMIX_C_API void dnmx_obj_destroy(dnmx_obj* obj);

@@ -13,7 +13,7 @@ void tearDown(void) {}
 
 void empty_domain(void) {
     dnmx_domain dom = {0};
-    dnmx_domain_clear(&dom);
+    dnmx_domain_destroy(&dom);
     T_NULL(dom.obj_types);
     T_EQ(0, dom.num_obj_types);
     T_NULL(dom.sparse_mixins);
@@ -168,7 +168,7 @@ void reg_unreg_mixin(void) {
         T_NULL(dom.sparse_mixins[i]);
     }
 
-    dnmx_domain_clear(&dom);
+    dnmx_domain_destroy(&dom);
 }
 
 void create_obj_type(void) {
@@ -228,7 +228,7 @@ void create_obj_type(void) {
         T_EQ_PTR(t_pers_inv, t_pers_inv2);
     }
 
-    dnmx_domain_clear(&dom);
+    dnmx_domain_destroy(&dom);
 }
 
 int main(void) {
