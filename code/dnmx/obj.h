@@ -8,8 +8,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-typedef struct dnmx_obj_type dnmx_obj_type;
 typedef struct dnmx_obj dnmx_obj;
+typedef struct dnmx_obj_type dnmx_obj_type;
+typedef struct dnmx_sv dnmx_sv;
 
 // mixin data in an object
 typedef struct dnmx_obj_mixin_data {
@@ -56,7 +57,19 @@ DYNAMIX_C_API bool dnmx_obj_init_copy(dnmx_obj* tgt, const dnmx_obj* src);
 DYNAMIX_C_API void dnmx_obj_init_move(dnmx_obj* tgt, dnmx_obj* src);
 
 /////////////////////////////////////////////
-// asignments
+// destruction:
+
+// destroys object
+// leaves it in an uninitialized state
+// must be called for every object which has been initialized
+DYNAMIX_C_API void dnmx_obj_destroy(dnmx_obj* obj);
+
+// frees and clears all data in an object
+// leaves it in an empty state
+DYNAMIX_C_API void dnmx_obj_clear(dnmx_obj* obj);
+
+/////////////////////////////////////////////
+// asignments:
 // they assume a valid object (never uninitialized)
 
 // changes the type of the target to the source type:
@@ -83,23 +96,33 @@ DYNAMIX_C_API void dnmx_obj_asgn_move(dnmx_obj* tgt, dnmx_obj* src);
 DYNAMIX_C_API bool dnmx_obj_asgn_move_matching(dnmx_obj* tgt, dnmx_obj* src);
 
 /////////////////////////////////////////////
-//
+// queries
+
+// checks if object is empty:
+// has no mixins, implements no features
+DYNAMIX_C_API bool dnmx_obj_is_empty(const dnmx_obj* obj);
 
 // checks whether all of the object's mixins have copy-init and assig funcs.
 // returns false if either is missing from at least one of its mixins
 // (note that there might be cases where _copy or _copy_matching won't throw
 // even though this function returns false).
-DYNAMIX_C_API void dnmx_obj_is_copyable(const dnmx_obj* tgt);
+DYNAMIX_C_API bool dnmx_obj_is_copyable(const dnmx_obj* obj);
 
+// checks if the object has a specific mixin by id.
+DYNAMIX_C_API bool dnmx_obj_has_mixin(const dnmx_obj* obj, dnmx_mixin_id mixin_id);
 
-/////////////////////////////////////////////
-// desryction
+// checks if the object has a specific mixin by mixin name (string view)
+DYNAMIX_C_API bool dnmx_obj_has_mixin_by_name(const dnmx_obj* obj, dnmx_sv mixin_name);
 
-// frees and clears all data in an object
-// leaves it in an empty state
-DYNAMIX_C_API void dnmx_obj_clear(dnmx_obj* obj);
+// gets a specific mixin by id from the object
+// returns nullptr if the mixin isn't available
+DYNAMIX_C_API void* dnmx_obj_get_mixin(const dnmx_obj* obj, dnmx_mixin_id mixin_id);
 
-// destroys object
-// leaves it in an uninitialized state
-// must be called for every object which has been initialized
-DYNAMIX_C_API void dnmx_obj_destroy(dnmx_obj* obj);
+// gets a specific mixin by name from the object
+// returns nullptr if the mixin isn't available
+DYNAMIX_C_API void* dnmx_obj_get_mixin_by_name(const dnmx_obj* obj, dnmx_sv mixin_name);
+
+// TODO:
+// DYNAMIX_C_API bool dnmx_obj_implements(const dnmx_obj* obj);
+
+// type classes
