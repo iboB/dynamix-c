@@ -15,6 +15,8 @@ target_sources(dynamix-c PRIVATE
     bits/empty_init.h
     bits/sv.h
 
+    alloc_util.h
+
     mixin_type_info.h
     mixin_type_info.c
     obj_type.h
@@ -23,4 +25,4 @@ target_sources(dynamix-c PRIVATE
     domain.c
     obj.h
     obj.c
-)
+ )

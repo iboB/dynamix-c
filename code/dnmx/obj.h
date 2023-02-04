@@ -35,6 +35,8 @@ struct dnmx_obj {
     // thus each mixin can get its own object
     const dnmx_obj_mixin_data* mixin_data;
 
+    // allocator
+
     dnmx_obj_virtual_mixin_data virtual_mixin_data;
 };
 
