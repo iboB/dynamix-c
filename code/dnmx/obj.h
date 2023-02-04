@@ -59,13 +59,41 @@ DYNAMIX_C_API void dnmx_obj_init_move(dnmx_obj* tgt, dnmx_obj* src);
 // asignments
 // they assume a valid object (never uninitialized)
 
+// changes the type of the target to the source type:
+// - will call assignment funcs for mixins that exist in both.
+// - will init_copy funcs for mixins which are new to target.
+// - will destroy target mixins that don't exist in source.
 // may return false if copy is not possible
 DYNAMIX_C_API bool dnmx_obj_asgn_copy(dnmx_obj* tgt, const dnmx_obj* src);
+
+// assigns of mixins that exist in both objects.
+// does not change the type of the target.
+// will call assignment operators for mixins that exist in both objects.
+// may return false if copy is not possible
+DYNAMIX_C_API bool dnmx_obj_asgn_copy_matching(dnmx_obj* tgt, const dnmx_obj* src);
 
 // will clear src
 DYNAMIX_C_API void dnmx_obj_asgn_move(dnmx_obj* tgt, dnmx_obj* src);
 
+// move-assign of mixins that exist in both objects.
+// will call move-assignment funcs of the mixins.
+// Will not change the type of the target or the source,
+// but will leave matching mixins in the source in a moved-out-from state.
+// may return false if copy is not possible (missing move-asgn funcs)
+DYNAMIX_C_API bool dnmx_obj_asgn_move_matching(dnmx_obj* tgt, dnmx_obj* src);
+
 /////////////////////////////////////////////
+//
+
+// checks whether all of the object's mixins have copy-init and assig funcs.
+// returns false if either is missing from at least one of its mixins
+// (note that there might be cases where _copy or _copy_matching won't throw
+// even though this function returns false).
+DYNAMIX_C_API void dnmx_obj_is_copyable(const dnmx_obj* tgt);
+
+
+/////////////////////////////////////////////
+// desryction
 
 // frees and clears all data in an object
 // leaves it in an empty state
