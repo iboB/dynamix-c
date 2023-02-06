@@ -12,8 +12,8 @@
 
 typedef struct dnmx_mixin_type_info dnmx_mixin_type_info;
 
-typedef void(*dnmx_mixin_init_func)(const dnmx_mixin_type_info* info, void* ptr);
-typedef void(*dnmx_mixin_copy_func)(const dnmx_mixin_type_info* info, void* ptr, const void* src);
+typedef bool(*dnmx_mixin_init_func)(const dnmx_mixin_type_info* info, void* ptr);
+typedef bool(*dnmx_mixin_copy_func)(const dnmx_mixin_type_info* info, void* ptr, const void* src);
 typedef void(*dnmx_mixin_move_func)(const dnmx_mixin_type_info* info, void* ptr, void* src);
 typedef void(*dnmx_mixin_destroy_func)(const dnmx_mixin_type_info* info, void* ptr);
 
