@@ -15,7 +15,7 @@ void util(void) {
     for (size_t ia = 0; ia < cnt(alignments); ++ia) {
         const size_t a = alignments[ia];
         for (size_t is = 1; is < 2; ++is) {
-            const size_t s = is * ia;
+            const size_t s = is * a;
             const size_t buf_size = dnmx_size_for_mixin_data_buf(s, a);
             for (size_t off = 0; off <= a; ++off) {
                 const uint8_t* p_buf_begin = buf + off;
