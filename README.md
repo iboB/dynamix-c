@@ -1,5 +1,7 @@
 # DynaMix
 
+> Archived. Merged with https://github.com/iboB/dynamix
+
 A dynamic polymorphism library for C.
 
 *Still WiP and in experimental stage of development*
